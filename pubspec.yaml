@@ -1,7 +1,7 @@
 name: flutter_dmx
 description: "A simple and flexible DMX control plugin for Flutter"
 version: 1.0.0
-homepage:
+repository: https://github.com/CodeSleeker/flutter-dmx
 
 environment:
   sdk: ^3.8.1
