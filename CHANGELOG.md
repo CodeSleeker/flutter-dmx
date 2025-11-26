@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/CodeSleeker/flutter-dmx/compare/v1.0.1...v1.0.2) (2025-11-26)
+
+
+### Bug Fixes
+
+* Fixed auto release ([b8c7f19](https://github.com/CodeSleeker/flutter-dmx/commit/b8c7f19dc208cf4fa3fff2e4654c0813d7023f1e))
+
 ## [1.0.1](https://github.com/CodeSleeker/flutter-dmx/compare/v1.0.0...v1.0.1) (2025-11-26)
 
 
