@@ -49,3 +49,6 @@ flutter:
         pluginClass: FlutterDmxPlugin
       windows:
         pluginClass: FlutterDmxPluginCApi
+
+false_secrets:
+  - node_modules/**
