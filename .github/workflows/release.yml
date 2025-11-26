@@ -90,26 +90,9 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Configure pub credentials
-        run: |
-          mkdir -p ~/.config/dart
-          cat <<EOF > ~/.config/dart/pub-credentials.json
-          {
-            "accessToken":"${{ secrets.PUB_DEV_TOKEN }}",
-            "refreshToken":"",
-            "tokenEndpoint":"https://accounts.google.com/o/oauth2/token",
-            "scopes":["openid","https://www.googleapis.com/auth/userinfo.email"],
-            "expiration": 9999999999
-          }
-          EOF
-
       # -----------------------
       # PUBLISH TO PUB.DEV
       # -----------------------
       - name: Publish package to pub.dev
-        env:
-          PUB_DEV_TOKEN: ${{ secrets.PUB_DEV_TOKEN }}
-        run: |
-          echo "$PUB_DEV_TOKEN" > ~/.pub-token
-          flutter pub publish --force
+        run: flutter pub publish --force
 
