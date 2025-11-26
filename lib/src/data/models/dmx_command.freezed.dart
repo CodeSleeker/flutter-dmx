@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$DmxCommandModel {
 
- int get brightness; DmxColor get color; int? get id; String? get area;
+ int get brightness; List<int> get color; int? get id; String? get area; String? get name;
 /// Create a copy of DmxCommandModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $DmxCommandModelCopyWith<DmxCommandModel> get copyWith => _$DmxCommandModelCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DmxCommandModel&&(identical(other.brightness, brightness) || other.brightness == brightness)&&(identical(other.color, color) || other.color == color)&&(identical(other.id, id) || other.id == id)&&(identical(other.area, area) || other.area == area));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DmxCommandModel&&(identical(other.brightness, brightness) || other.brightness == brightness)&&const DeepCollectionEquality().equals(other.color, color)&&(identical(other.id, id) || other.id == id)&&(identical(other.area, area) || other.area == area)&&(identical(other.name, name) || other.name == name));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,brightness,color,id,area);
+int get hashCode => Object.hash(runtimeType,brightness,const DeepCollectionEquality().hash(color),id,area,name);
 
 @override
 String toString() {
-  return 'DmxCommandModel(brightness: $brightness, color: $color, id: $id, area: $area)';
+  return 'DmxCommandModel(brightness: $brightness, color: $color, id: $id, area: $area, name: $name)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $DmxCommandModelCopyWith<$Res>  {
   factory $DmxCommandModelCopyWith(DmxCommandModel value, $Res Function(DmxCommandModel) _then) = _$DmxCommandModelCopyWithImpl;
 @useResult
 $Res call({
- int brightness, DmxColor color, int? id, String? area
+ int brightness, List<int> color, int? id, String? area, String? name
 });
 
 
@@ -65,12 +65,13 @@ class _$DmxCommandModelCopyWithImpl<$Res>
 
 /// Create a copy of DmxCommandModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? brightness = null,Object? color = null,Object? id = freezed,Object? area = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? brightness = null,Object? color = null,Object? id = freezed,Object? area = freezed,Object? name = freezed,}) {
   return _then(_self.copyWith(
 brightness: null == brightness ? _self.brightness : brightness // ignore: cast_nullable_to_non_nullable
 as int,color: null == color ? _self.color : color // ignore: cast_nullable_to_non_nullable
-as DmxColor,id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as List<int>,id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int?,area: freezed == area ? _self.area : area // ignore: cast_nullable_to_non_nullable
+as String?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -156,10 +157,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int brightness,  DmxColor color,  int? id,  String? area)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int brightness,  List<int> color,  int? id,  String? area,  String? name)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _DmxCommandModel() when $default != null:
-return $default(_that.brightness,_that.color,_that.id,_that.area);case _:
+return $default(_that.brightness,_that.color,_that.id,_that.area,_that.name);case _:
   return orElse();
 
 }
@@ -177,10 +178,10 @@ return $default(_that.brightness,_that.color,_that.id,_that.area);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int brightness,  DmxColor color,  int? id,  String? area)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int brightness,  List<int> color,  int? id,  String? area,  String? name)  $default,) {final _that = this;
 switch (_that) {
 case _DmxCommandModel():
-return $default(_that.brightness,_that.color,_that.id,_that.area);case _:
+return $default(_that.brightness,_that.color,_that.id,_that.area,_that.name);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -197,10 +198,10 @@ return $default(_that.brightness,_that.color,_that.id,_that.area);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int brightness,  DmxColor color,  int? id,  String? area)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int brightness,  List<int> color,  int? id,  String? area,  String? name)?  $default,) {final _that = this;
 switch (_that) {
 case _DmxCommandModel() when $default != null:
-return $default(_that.brightness,_that.color,_that.id,_that.area);case _:
+return $default(_that.brightness,_that.color,_that.id,_that.area,_that.name);case _:
   return null;
 
 }
@@ -212,13 +213,20 @@ return $default(_that.brightness,_that.color,_that.id,_that.area);case _:
 @JsonSerializable()
 
 class _DmxCommandModel implements DmxCommandModel {
-  const _DmxCommandModel({required this.brightness, required this.color, this.id, this.area});
+  const _DmxCommandModel({required this.brightness, required final  List<int> color, this.id, this.area, this.name}): _color = color;
   factory _DmxCommandModel.fromJson(Map<String, dynamic> json) => _$DmxCommandModelFromJson(json);
 
 @override final  int brightness;
-@override final  DmxColor color;
+ final  List<int> _color;
+@override List<int> get color {
+  if (_color is EqualUnmodifiableListView) return _color;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_color);
+}
+
 @override final  int? id;
 @override final  String? area;
+@override final  String? name;
 
 /// Create a copy of DmxCommandModel
 /// with the given fields replaced by the non-null parameter values.
@@ -233,16 +241,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DmxCommandModel&&(identical(other.brightness, brightness) || other.brightness == brightness)&&(identical(other.color, color) || other.color == color)&&(identical(other.id, id) || other.id == id)&&(identical(other.area, area) || other.area == area));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DmxCommandModel&&(identical(other.brightness, brightness) || other.brightness == brightness)&&const DeepCollectionEquality().equals(other._color, _color)&&(identical(other.id, id) || other.id == id)&&(identical(other.area, area) || other.area == area)&&(identical(other.name, name) || other.name == name));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,brightness,color,id,area);
+int get hashCode => Object.hash(runtimeType,brightness,const DeepCollectionEquality().hash(_color),id,area,name);
 
 @override
 String toString() {
-  return 'DmxCommandModel(brightness: $brightness, color: $color, id: $id, area: $area)';
+  return 'DmxCommandModel(brightness: $brightness, color: $color, id: $id, area: $area, name: $name)';
 }
 
 
@@ -253,7 +261,7 @@ abstract mixin class _$DmxCommandModelCopyWith<$Res> implements $DmxCommandModel
   factory _$DmxCommandModelCopyWith(_DmxCommandModel value, $Res Function(_DmxCommandModel) _then) = __$DmxCommandModelCopyWithImpl;
 @override @useResult
 $Res call({
- int brightness, DmxColor color, int? id, String? area
+ int brightness, List<int> color, int? id, String? area, String? name
 });
 
 
@@ -270,12 +278,13 @@ class __$DmxCommandModelCopyWithImpl<$Res>
 
 /// Create a copy of DmxCommandModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? brightness = null,Object? color = null,Object? id = freezed,Object? area = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? brightness = null,Object? color = null,Object? id = freezed,Object? area = freezed,Object? name = freezed,}) {
   return _then(_DmxCommandModel(
 brightness: null == brightness ? _self.brightness : brightness // ignore: cast_nullable_to_non_nullable
-as int,color: null == color ? _self.color : color // ignore: cast_nullable_to_non_nullable
-as DmxColor,id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,color: null == color ? _self._color : color // ignore: cast_nullable_to_non_nullable
+as List<int>,id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int?,area: freezed == area ? _self.area : area // ignore: cast_nullable_to_non_nullable
+as String?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

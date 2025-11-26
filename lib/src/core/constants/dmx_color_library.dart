@@ -1,4 +1,4 @@
-library dmx_color_lib;
+library;
 
 import 'package:flutter_dmx/src/core/constants/dmx_color.dart';
 

@@ -1,6 +1,6 @@
 package com.example.flutter_dmx.models
 
-data class Dmx (
+data class DmxFixture (
     val id: Int,
     val name: String,
     val address: Int,

@@ -1,9 +1,13 @@
 package com.example.flutter_dmx
 
+import android.R
 import android.util.Log
 import ch.bildspur.artnet.ArtNetClient
-import com.example.flutter_dmx.models.Dmx
+import com.example.flutter_dmx.models.DmxCommand
+import com.example.flutter_dmx.models.DmxFixture
+import com.example.flutter_dmx.models.DmxPacket
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,16 +21,190 @@ class DmxController(
     private val mainScope = CoroutineScope(Dispatchers.Main)
     private val gson: Gson = Gson()
     private val dmxData: ByteArray = ByteArray(512)
-    private val dmxMap = mutableMapOf<Int, Dmx>()
+    private val dmxMap = mutableMapOf<Int, DmxFixture>()
     private val artNet = ArtNetClient()
     private var ipAddress: String? = null
 
+    fun applyBrightness(rgb: List<Int>, brightnessPercent: Int): List<Int> {
+        val brightness = brightnessPercent / 100.0
+        return rgb.map { (it * brightness).toInt().coerceIn(0,255) }
+    }
+
+    private fun writeRgb(baseIndex: Int, color: List<Int>){
+        dmxData[baseIndex] = color[0].toByte()
+        dmxData[baseIndex + 1] = color[1].toByte()
+        dmxData[baseIndex + 2] = color[2].toByte()
+    }
+
+    private fun applyChannelLogic(fixture: DmxFixture, command: DmxCommand, index: Int){
+        var adjustedColor = command.color
+        var baseIndex = index
+
+        when(fixture.channel){
+            7 -> {
+                dmxData[index] = (255 * (command.brightness / 100)).toByte()
+                baseIndex = index + 1
+            }
+            1 -> {
+                if(command.color.all { it == 255 }){
+                    dmxData[index] = (255 * (command.brightness / 100)).toByte()
+                }
+            }
+            else -> {
+                adjustedColor = applyBrightness(command.color, command.brightness)
+            }
+        }
+        when(fixture.colorMode.lowercase()){
+            "rgb" -> {
+                if(!command.color.all { it == 255 }){
+                    writeRgb(baseIndex, adjustedColor)
+                }
+            }
+            "rgbw" -> writeRgb(baseIndex, adjustedColor)
+        }
+    }
+
+    private fun applyAllColor(fixture: DmxFixture, index: Int, color: List<Int>){
+        var baseIndex = index
+        when(fixture.channel){
+            7 -> {
+                dmxData[index] = 255.toByte()
+                baseIndex = index +1
+            }
+            1 -> {
+                if(color.all { it == 255 }){
+                    dmxData[index] = 255.toByte()
+                }
+            }
+        }
+        when(fixture.colorMode.lowercase()){
+            "rgb" -> {
+                if(!color.all { it == 255 }){
+                    writeRgb(baseIndex, color)
+                }
+            }
+            "rgbw" -> {
+                writeRgb(baseIndex, color)
+            }
+        }
+    }
+
+    private fun applyAll(fixture: DmxFixture, index: Int, brightness: Int){
+        when(fixture.channel){
+            7 -> dmxData[index] = brightness.toByte()
+            1 -> dmxData[index] = brightness.toByte()
+            else -> {
+                dmxData[index] = (dmxData[index].toInt() * brightness).toByte()
+                dmxData[index + 1] = (dmxData[index+1].toInt() * brightness).toByte()
+                dmxData[index + 2] = (dmxData[index+2].toInt() * brightness).toByte()
+            }
+        }
+    }
+
+    private fun applySequential(fixture: DmxFixture, command: DmxCommand){
+        repeat(fixture.count){i ->
+            val baseIndex = fixture.address + (i * fixture.channel)
+            applyChannelLogic(fixture, command, baseIndex)
+        }
+    }
+
+    private fun applySingle(fixture: DmxFixture, command: DmxCommand){
+        applyChannelLogic(fixture, command, fixture.address)
+    }
+
+    private fun applyCommandToFixture(fixture: DmxFixture, command: DmxCommand){
+        if(fixture.count > 0 && fixture.addressMode.lowercase() == "seq"){
+            applySequential(fixture, command)
+        }
+        else {
+            applySingle(fixture, command)
+        }
+    }
+
+    fun setAllColor(colorString: String){
+        dmxData.fill(0)
+        val rgb: List<Int> = gson.fromJson(colorString, object : TypeToken<List<Int>>() {}.type)
+        dmxMap.values.forEach { fixture ->
+            if(fixture.count > 0 && fixture.addressMode.lowercase() == "seq"){
+                repeat(fixture.count){i ->
+                    val baseIndex = fixture.address + (i * fixture.channel)
+                    applyAllColor(fixture, baseIndex, rgb)
+                }
+            }
+            else {
+                applyAllColor(fixture, fixture.address, rgb)
+            }
+        }
+    }
+
+    fun setAllBrightness(brightnessPercent: Int){
+        val brightness = 255 * (brightnessPercent/100)
+        dmxMap.values.forEach { fixture ->
+            if(fixture.count > 0 && fixture.addressMode.lowercase() == "seq"){
+                repeat(fixture.count){i->
+                    val baseIndex = fixture.address + (i * fixture.channel)
+                    applyAll(fixture, baseIndex, brightness)
+                }
+            }
+            else {
+                applyAll(fixture, fixture.address, brightness)
+            }
+        }
+    }
+
+    fun turnAll(on: Boolean){
+        dmxMap.values.forEach { fixture ->
+            if(fixture.count > 0 && fixture.addressMode.lowercase() == "seq"){
+                repeat(fixture.count){i->
+                    val baseIndex = fixture.address + (i * fixture.channel)
+                    applyAll(fixture, baseIndex, if(on) 255 else 0)
+                }
+            }
+            else {
+                applyAll(fixture, fixture.address, if(on) 255 else 0)
+            }
+        }
+    }
+
+    fun controlById(data: String){
+        val command = gson.fromJson(data, DmxCommand::class.java)
+        val fixture = dmxMap[command.id] ?: return
+        applyCommandToFixture(fixture, command)
+        sendDmxData(dmxData)
+    }
+
+    fun controlByName(data: String){
+        val command = gson.fromJson(data, DmxCommand::class.java)
+        dmxMap.values.filter { it.name == command.name}
+            .forEach { fixture -> applyCommandToFixture(fixture, command) }
+        sendDmxData(dmxData)
+    }
+
+    fun controlByArea(data: String){
+        val command = gson.fromJson(data, DmxCommand::class.java)
+        dmxMap.values.filter { it.area == command.area }
+            .forEach { fixture ->  applyCommandToFixture(fixture, command) }
+        sendDmxData(dmxData)
+    }
+
+    fun sendPackets(data: String){
+        val listType = object: TypeToken<List<DmxPacket>>(){}.type
+        val packets: List<DmxPacket> = gson.fromJson(data, listType)
+
+        packets.forEach { packet ->
+            repeat(packet.byteData.size){i->
+                val index = packet.address + i
+                dmxData[index] = packet.byteData[i].toByte()
+            }
+        }
+        sendDmxData(dmxData)
+    }
     fun setIpAddress(ip: String){
         ipAddress = ip
     }
     fun setDmx(data: String){
         try {
-            val dmx: Dmx = gson.fromJson(data, Dmx::class.java)
+            val dmx: DmxFixture = gson.fromJson(data, DmxFixture::class.java)
             dmxMap[dmx.id] = dmx
             val dmxList: List<Map<String, Any?>> = dmxMap.values.map { dmx ->
                 mapOf(
@@ -49,7 +227,7 @@ class DmxController(
         }
     }
 
-    private fun sendDmxData(data: ByteArray, universe: Int){
+    private fun sendDmxData(data: ByteArray, universe: Int = 0){
         scope.launch {
             try {
                 artNet.unicastDmx(ipAddress, 0, universe, data)

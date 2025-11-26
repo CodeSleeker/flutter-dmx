@@ -41,7 +41,7 @@ abstract class FlutterDmx {
   /// Turn all fixtures off
   Future<bool> turnAllOff();
 
-  /// Turn all fixtures on
+  /// Turn all fixtures on, set brightness if defined else full brightness
   Future<bool> turnAllOn();
 
   /// Set all fixtures brightness

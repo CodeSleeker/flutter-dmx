@@ -27,17 +27,45 @@ class FlutterDmxPlugin: FlutterPlugin, MethodCallHandler {
     when(call.method){
       "ipAddress" -> {
         dmxController.setIpAddress(call.arguments as String)
-        println("IP address set: ${call.arguments}")
         result.success(true)
       }
       "data" -> {
         val jsonString = call.arguments as String
         dmxController.setDmx(jsonString)
-        println("Dmx data set: $jsonString")
         result.success(true)
       }
       "packet" -> {
-
+        dmxController.sendPackets(call.arguments as String)
+        result.success(true)
+      }
+      "controlByArea" -> {
+        val jsonString = call.arguments as String
+        dmxController.controlByArea(jsonString)
+        result.success(true)
+      }
+      "controlById" -> {
+        dmxController.controlById(call.arguments as String)
+        result.success(true)
+      }
+      "controlByName" -> {
+        dmxController.controlByName(call.arguments as String)
+        result.success(true)
+      }
+      "turnAllOn" -> {
+        dmxController.turnAll(true)
+        result.success((true))
+      }
+      "turnAllOff" -> {
+        dmxController.turnAll(false)
+        result.success(true)
+      }
+      "setAllBrightness" -> {
+        dmxController.setAllBrightness(call.arguments as Int)
+        result.success(true)
+      }
+      "setAllColor" -> {
+        dmxController.setAllColor(call.arguments as String)
+        result.success(true)
       }
     }
   }

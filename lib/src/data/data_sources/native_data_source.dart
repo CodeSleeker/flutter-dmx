@@ -30,7 +30,7 @@ class NativeDataSourceImpl implements NativeDataSource {
     });
   }
   @override
-  Future<bool> sendString(String method, String data) async {
+  Future<bool> sendData(String method, dynamic data) async {
     return await _channel.invokeMethod<bool>(method, data) ?? false;
   }
 

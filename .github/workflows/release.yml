@@ -1,0 +1,102 @@
+name: Flutter Plugin Release
+
+on:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      # -----------------------
+      # CHECKOUT
+      # -----------------------
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      # -----------------------
+      # NODE + SEMANTIC RELEASE
+      # -----------------------
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+
+      - name: Install semantic-release deps
+        run: npm install
+
+      # Detect next version WITHOUT applying changes yet
+      - name: Semantic Release Dry Run
+        id: semantic_version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          OUTPUT=$(npx semantic-release --dry-run)
+          VERSION=$(echo "$OUTPUT" | awk '/The next release version is/ {print $NF}')
+          echo "next_version=$VERSION" >> $GITHUB_ENV
+          echo "Next version = $VERSION"
+
+      # -----------------------
+      # UPDATE pubspec.yaml
+      # -----------------------
+      - name: Update pubspec.yaml
+        run: |
+          if [ -z "${{ env.next_version }}" ]; then
+            echo "No release needed."
+            exit 0
+          fi
+          sed -i "s/^version:.*/version: ${{ env.next_version }}+1/" pubspec.yaml
+
+      # -----------------------
+      # RUN semantic-release (real)
+      # This generates CHANGELOG.md, tags, release notes — BUT does NOT publish to pub.dev
+      # -----------------------
+      - name: Generate CHANGELOG + GitHub Release
+        id: semantic_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npx semantic-release
+
+      # -----------------------
+      # COMMIT UPDATED FILES BEFORE PUBLISHING
+      # pubspec.yaml and CHANGELOG.md must be committed first
+      # -----------------------
+      - name: Commit updated pubspec.yaml & CHANGELOG.md
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pubspec.yaml CHANGELOG.md
+          git commit -m "chore(release): prepare v${{ env.next_version }}" || echo "No changes to commit"
+          git push
+
+      # -----------------------
+      # FLUTTER SETUP
+      # -----------------------
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.32.8"
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      # -----------------------
+      # PUBLISH TO PUB.DEV
+      # -----------------------
+      - name: Publish package to pub.dev
+        env:
+          PUB_DEV_TOKEN: ${{ secrets.PUB_DEV_TOKEN }}
+        run: |
+          echo "$PUB_DEV_TOKEN" > ~/.pub-token
+          flutter pub publish --force
+

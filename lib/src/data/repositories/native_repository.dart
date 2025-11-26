@@ -18,19 +18,19 @@ class NativeRepositoryImpl implements NativeRepository {
   @override
   Future<bool> setData(DmxFixture data) async {
     final dataString = jsonEncode(DmxFixtureModel.fromEntity(data));
-    return await dataSource.sendString('data', dataString);
+    return await dataSource.sendData('data', dataString);
   }
 
   @override
   Future<bool> setIpAddress(String ipAddress) async =>
-      await dataSource.sendString('ipAddress', ipAddress);
+      await dataSource.sendData('ipAddress', ipAddress);
 
   @override
   Future<bool> sendPackets(List<DmxPacket> packets) async {
     final packetsString = jsonEncode(
       packets.map((p) => DmxPacketModel.fromEntity(p).toJson()).toList(),
     );
-    return await dataSource.sendString('packet', packetsString);
+    return await dataSource.sendData('packet', packetsString);
   }
 
   @override
@@ -39,19 +39,19 @@ class NativeRepositoryImpl implements NativeRepository {
   @override
   Future<bool> controlByArea(DmxCommand command) async {
     final commandString = jsonEncode(DmxCommandModel.fromEntity(command));
-    return await dataSource.sendString('controlByArea', commandString);
+    return await dataSource.sendData('controlByArea', commandString);
   }
 
   @override
   Future<bool> controlById(DmxCommand command) async {
     final commandString = jsonEncode(DmxCommandModel.fromEntity(command));
-    return await dataSource.sendString('controlById', commandString);
+    return await dataSource.sendData('controlById', commandString);
   }
 
   @override
   Future<bool> controlByName(DmxCommand command) async {
     final commandString = jsonEncode(DmxCommandModel.fromEntity(command));
-    return await dataSource.sendString('controlByName', commandString);
+    return await dataSource.sendData('controlByName', commandString);
   }
 
   @override
@@ -61,15 +61,12 @@ class NativeRepositoryImpl implements NativeRepository {
 
   @override
   Future<bool> setAllBrightness(int value) async {
-    return await dataSource.sendString('setAllBrightness', value.toString());
+    return await dataSource.sendData('setAllBrightness', value.toString());
   }
 
   @override
   Future<bool> setAllColor(DmxColor color) async {
-    return await dataSource.sendString(
-      'setAllColor',
-      color.data.rgb.toString(),
-    );
+    return await dataSource.sendData('setAllColor', color.data.rgb.toString());
   }
 
   @override

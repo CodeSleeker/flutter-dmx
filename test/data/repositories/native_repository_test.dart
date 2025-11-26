@@ -16,19 +16,19 @@ void main() {
   group('NativeRepositoryImpl', () {
     test('Should return true when datasource returns true', () async {
       when(
-        () => mockNativeDataSource.sendString(any(), any()),
+        () => mockNativeDataSource.sendData('ipAddress', '192.168.1.112'),
       ).thenAnswer((_) async => true);
       final result = await repository.setIpAddress('192.168.1.112');
       expect(result, isTrue);
       verify(
-        () => mockNativeDataSource.sendString('ipAddress', '192.168.1.112'),
+        () => mockNativeDataSource.sendData('ipAddress', '192.168.1.112'),
       ).called(1);
     });
 
     test('should return false when datasource returns false', () async {
       // arrange
       when(
-        () => mockNativeDataSource.sendString(any(), any()),
+        () => mockNativeDataSource.sendData(any(), any()),
       ).thenAnswer((_) async => false);
 
       // act

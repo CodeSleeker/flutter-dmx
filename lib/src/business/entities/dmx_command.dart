@@ -16,7 +16,10 @@ class DmxCommand {
   /// Area name to control (if applicable).
   final String? area;
 
-  /// Brightness value (0–255).
+  /// Display name to control (if applicable).
+  final String? name;
+
+  /// Brightness value in percentage (0–100).
   final int brightness;
 
   /// The color to apply.
@@ -27,5 +30,6 @@ class DmxCommand {
     required this.color,
     this.area,
     this.id,
+    this.name,
   });
 }
