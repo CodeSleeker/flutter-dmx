@@ -1,46 +1,46 @@
 part of 'dmx_color_library.dart';
 
 extension DmxColorX on DmxColor {
-  _DmxColorData get data {
+  DmxColorData get data {
     switch (this) {
       case DmxColor.red:
-        return _DmxColorData.red;
+        return DmxColorData.red;
       case DmxColor.green:
-        return _DmxColorData.green;
+        return DmxColorData.green;
       case DmxColor.blue:
-        return _DmxColorData.blue;
+        return DmxColorData.blue;
       case DmxColor.white:
-        return _DmxColorData.white;
+        return DmxColorData.white;
       case DmxColor.warmWhite:
-        return _DmxColorData.warmWhite;
+        return DmxColorData.warmWhite;
       case DmxColor.coldWhite:
-        return _DmxColorData.coldWhite;
+        return DmxColorData.coldWhite;
       case DmxColor.amber:
-        return _DmxColorData.amber;
+        return DmxColorData.amber;
       case DmxColor.lime:
-        return _DmxColorData.lime;
+        return DmxColorData.lime;
       case DmxColor.cyan:
-        return _DmxColorData.cyan;
+        return DmxColorData.cyan;
       case DmxColor.magenta:
-        return _DmxColorData.magenta;
+        return DmxColorData.magenta;
       case DmxColor.yellow:
-        return _DmxColorData.yellow;
+        return DmxColorData.yellow;
       case DmxColor.orange:
-        return _DmxColorData.orange;
+        return DmxColorData.orange;
       case DmxColor.pink:
-        return _DmxColorData.pink;
+        return DmxColorData.pink;
       case DmxColor.purple:
-        return _DmxColorData.purple;
+        return DmxColorData.purple;
       case DmxColor.uv:
-        return _DmxColorData.uv;
+        return DmxColorData.uv;
       case DmxColor.royalBlue:
-        return _DmxColorData.royalBlue;
+        return DmxColorData.royalBlue;
       case DmxColor.deepRed:
-        return _DmxColorData.deepRed;
+        return DmxColorData.deepRed;
       case DmxColor.deepGreen:
-        return _DmxColorData.deepGreen;
+        return DmxColorData.deepGreen;
       case DmxColor.deepBlue:
-        return _DmxColorData.deepBlue;
+        return DmxColorData.deepBlue;
     }
   }
 }

@@ -23,7 +23,7 @@ class NativeDataSourceImpl implements NativeDataSource {
             final dmxDataList = dmxList.map((l) => l.toEntity()).toList();
             _dmxListController.add(dmxDataList);
           } catch (e) {
-            print(e);
+            throw Exception(e);
           }
           break;
       }

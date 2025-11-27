@@ -1,6 +1,6 @@
 part of 'dmx_color_library.dart';
 
-enum _DmxColorData {
+enum DmxColorData {
   red("#FF0000", 255, 0, 0),
   green("#00FF00", 0, 255, 0),
   blue("#0000FF", 0, 0, 255),
@@ -30,7 +30,7 @@ enum _DmxColorData {
   final int g;
   final int b;
 
-  const _DmxColorData(this.hex, this.r, this.g, this.b);
+  const DmxColorData(this.hex, this.r, this.g, this.b);
 
   List<int> get rgb => [r, g, b];
 }
