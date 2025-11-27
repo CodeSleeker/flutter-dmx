@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/CodeSleeker/flutter-dmx/compare/v1.1.1...v1.1.2) (2025-11-27)
+
+
+### Bug Fixes
+
+* Brightness should be percentage value 0-100 ([97cbe93](https://github.com/CodeSleeker/flutter-dmx/commit/97cbe937fa162a7778062aad4169528030d076a4))
+
 ## [1.1.1](https://github.com/CodeSleeker/flutter-dmx/compare/v1.1.0...v1.1.1) (2025-11-27)
 
 
