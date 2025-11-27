@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/CodeSleeker/flutter-dmx/compare/v1.0.3...v1.1.0) (2025-11-27)
+
+
+### Features
+
+* Added control by name feature ([1a74f9b](https://github.com/CodeSleeker/flutter-dmx/commit/1a74f9b82f37ee6497496cc7c2cfb50b136db9ce))
+
 ## [1.0.3](https://github.com/CodeSleeker/flutter-dmx/compare/v1.0.2...v1.0.3) (2025-11-26)
 
 
