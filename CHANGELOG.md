@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/CodeSleeker/flutter-dmx/compare/v1.1.0...v1.1.1) (2025-11-27)
+
+
+### Bug Fixes
+
+*  Invalid use of a private type in a public API. ([e17e179](https://github.com/CodeSleeker/flutter-dmx/commit/e17e179475a3e4b5468512e23e648bd37bba3dbc))
+
 # [1.1.0](https://github.com/CodeSleeker/flutter-dmx/compare/v1.0.3...v1.1.0) (2025-11-27)
 
 
