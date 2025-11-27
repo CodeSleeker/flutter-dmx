@@ -41,7 +41,7 @@ dmx.controlById(
   DmxCommand(
     id: 1,
     color: DmxColor.red,
-    brightness: 255,
+    brightness: 90,
   ),
 );
 ```
@@ -52,7 +52,7 @@ dmx.controlByName(
   DmxCommand(
     name: "Spotlight A",
     color: DmxColor.blue,
-    brightness: 180,
+    brightness: 90,
   ),
 );
 ```
@@ -63,7 +63,7 @@ dmx.controlByArea(
   DmxCommand(
     area: "Stage Left",
     color: DmxColor.warmWhite,
-    brightness: 220,
+    brightness: 100,
   ),
 );
 ```
@@ -72,7 +72,7 @@ dmx.controlByArea(
 ```
 await dmx.turnAllOn();
 await dmx.turnAllOff();
-await dmx.setAllBrightness(200);
+await dmx.setAllBrightness(80);
 await dmx.setAllColor(DmxColor.magenta);
 ```
 
@@ -82,7 +82,7 @@ await dmx.setAllColor(DmxColor.magenta);
 ```
 dmx.set
   .color(DmxColor.orange)
-  .brightness(255)
+  .brightness(80)
   .sendById(1);
 ```
 
@@ -137,7 +137,7 @@ DmxFixture(
 DmxCommand(
   id: 3,
   color: DmxColor.deepBlue,
-  brightness: 200,
+  brightness: 80,
 );
 ```
 

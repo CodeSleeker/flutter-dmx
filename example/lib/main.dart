@@ -57,7 +57,7 @@ class _MyAppState extends State<MyApp> implements DmxListener {
               ElevatedButton(
                 onPressed: () {
                   final command = DmxCommand(
-                    brightness: 255,
+                    brightness: 100,
                     color: DmxColor.red,
                     area: 'North Field',
                   );
@@ -65,7 +65,7 @@ class _MyAppState extends State<MyApp> implements DmxListener {
                   // or
                   _flutterDmx.set
                       .color(DmxColor.amber)
-                      .brightness(255)
+                      .brightness(100)
                       .sendByArea('North Field');
                 },
                 child: Text('Control by area'),
