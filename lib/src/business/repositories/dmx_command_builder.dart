@@ -6,4 +6,5 @@ abstract class DmxCommandBuilder {
 
   Future<bool> sendById(int id);
   Future<bool> sendByArea(String area);
+  Future<bool> sendByName(String name);
 }
