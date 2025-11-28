@@ -27,6 +27,18 @@ class DmxController(
     private val artNet = ArtNetClient()
     private var ipAddress: String? = null
 
+    fun setLogging(enable: Boolean){
+        loggingEnabled = enable
+    }
+
+    private var loggingEnabled = false
+
+    private fun log(message: String){
+        if(loggingEnabled){
+            Log.d("[FlutterDmx]", message)
+        }
+    }
+
     fun applyBrightness(rgb: List<Int>, brightnessPercent: Int): List<Int> {
         val brightness = brightnessPercent / 100.0
         return rgb.map { (it * brightness).toInt().coerceIn(0,255) }
@@ -104,7 +116,8 @@ class DmxController(
     }
 
     private fun applySequential(fixture: DmxFixture, command: DmxCommand){
-        repeat(fixture.count){i ->
+        val count = fixture.count ?: 1
+        repeat(count){i ->
             val baseIndex = fixture.address + (i * fixture.channel)
             applyChannelLogic(fixture, command, baseIndex)
         }
@@ -115,7 +128,9 @@ class DmxController(
     }
 
     private fun applyCommandToFixture(fixture: DmxFixture, command: DmxCommand){
-        if(fixture.count > 0 && fixture.addressMode.lowercase() == "seq"){
+        val count = fixture.count ?: 1
+        val addressMode = fixture.addressMode?.lowercase() ?: "shared"
+        if(count > 0 && addressMode == "seq"){
             applySequential(fixture, command)
         }
         else {
@@ -124,16 +139,21 @@ class DmxController(
     }
 
     fun setAllColor(colorString: String){
+        log("Received setAllColor: $colorString")
         dmxData.fill(0)
         val rgb: List<Int> = gson.fromJson(colorString, object : TypeToken<List<Int>>() {}.type)
         dmxMap.values.forEach { fixture ->
-            if(fixture.count > 0 && fixture.addressMode.lowercase() == "seq"){
-                repeat(fixture.count){i ->
+            val count = fixture.count ?: 1
+            val addressMode = fixture.addressMode?.lowercase() ?: "shared"
+            if(count > 0 && addressMode == "seq"){
+                repeat(count){i ->
+                    log("Applying command to fixture id: ${fixture.id} index: $i")
                     val baseIndex = fixture.address + (i * fixture.channel)
                     applyAllColor(fixture, baseIndex, rgb)
                 }
             }
             else {
+                log("Applying command to fixture id: ${fixture.id}")
                 applyAllColor(fixture, fixture.address, rgb)
             }
         }
@@ -141,15 +161,20 @@ class DmxController(
     }
 
     fun setAllBrightness(brightnessPercent: Int){
+        log("Received setAllBrightness: $brightnessPercent%")
         val brightness = (255 * (brightnessPercent/100f)).toInt()
         dmxMap.values.forEach { fixture ->
-            if(fixture.count > 0 && fixture.addressMode.lowercase() == "seq"){
-                repeat(fixture.count){i->
+            val count = fixture.count ?: 1
+            val addressMode = fixture.addressMode?.lowercase() ?: "shared"
+            if(count > 0 && addressMode == "seq"){
+                repeat(count){i->
+                    log("Applying command to fixture id: ${fixture.id} index: $i")
                     val baseIndex = fixture.address + (i * fixture.channel)
                     applyAll(fixture, baseIndex, brightness)
                 }
             }
             else {
+                log("Applying command to fixture id: ${fixture.id}")
                 applyAll(fixture, fixture.address, brightness)
             }
         }
@@ -157,41 +182,58 @@ class DmxController(
     }
 
     fun turnAll(on: Boolean){
+        if(on) log("Received turnAllOn")
+        else log("Received turnAllOff")
         dmxMap.values.forEach { fixture ->
-            if(fixture.count > 0 && fixture.addressMode.lowercase() == "seq"){
-                repeat(fixture.count){i->
+            val count = fixture.count ?: 1
+            val addressMode = fixture.addressMode?.lowercase() ?: "shared"
+            if(count > 0 && addressMode == "seq"){
+                repeat(count){i->
+                    log("Applying command to fixture id: ${fixture.id} index: $i")
                     val baseIndex = fixture.address + (i * fixture.channel)
                     applyAll(fixture, baseIndex, if(on) 255 else 0)
                 }
             }
             else {
+                log("Applying command to fixture id: ${fixture.id}")
                 applyAll(fixture, fixture.address, if(on) 255 else 0)
             }
         }
     }
 
     fun controlById(data: String){
+        log("Received controlById: $data")
         val command = gson.fromJson(data, DmxCommand::class.java)
         val fixture = dmxMap[command.id] ?: return
+        log("Applying command to fixture id: ${fixture.id}")
         applyCommandToFixture(fixture, command)
         sendDmxData(dmxData)
     }
 
     fun controlByName(data: String){
+        log("Received controlByName: $data")
         val command = gson.fromJson(data, DmxCommand::class.java)
         dmxMap.values.filter { it.name == command.name}
-            .forEach { fixture -> applyCommandToFixture(fixture, command) }
+            .forEach { fixture ->
+                log("Applying command to fixture id: ${fixture.id}")
+                applyCommandToFixture(fixture, command)
+            }
         sendDmxData(dmxData)
     }
 
     fun controlByArea(data: String){
+        log("Received controlByArea: $data")
         val command = gson.fromJson(data, DmxCommand::class.java)
         dmxMap.values.filter { it.area == command.area }
-            .forEach { fixture ->  applyCommandToFixture(fixture, command) }
+            .forEach { fixture ->
+                log("Applying command to fixture id: ${fixture.id}")
+                applyCommandToFixture(fixture, command)
+            }
         sendDmxData(dmxData)
     }
 
     fun sendPackets(data: String){
+        log("Received packet sending request")
         val listType = object: TypeToken<List<DmxPacket>>(){}.type
         val packets: List<DmxPacket> = gson.fromJson(data, listType)
 
@@ -204,12 +246,23 @@ class DmxController(
         sendDmxData(dmxData)
     }
     fun setIpAddress(ip: String){
+        log("Ip Address set")
         ipAddress = ip
     }
     fun setDmx(data: String){
+        log("Received dmx fixture data: $data")
         try {
             val dmx: DmxFixture = gson.fromJson(data, DmxFixture::class.java)
-            dmxMap[dmx.id] = dmx
+            dmxMap[dmx.id] = DmxFixture(
+                id = dmx.id,
+                name = dmx.name,
+                address = dmx.address - 1,
+                area = dmx.area,
+                colorMode = dmx.colorMode,
+                channel = dmx.channel,
+                count = dmx.count,
+                addressMode = dmx.addressMode
+            )
             val dmxList: List<Map<String, Any?>> = dmxMap.values.map { dmx ->
                 mapOf(
                     "id" to dmx.id,
@@ -223,20 +276,21 @@ class DmxController(
                 )
             }.toList()
             mainScope.launch {
-//                val jsonArrayString = gson.toJson(dmxMap.values)
                 channel.invokeMethod("dmx_list", dmxList)
             }
         } catch (e: Exception){
-            Log.e("DMX", "Invalid JSON: $data", e)
+            log("Invalid JSON: $data")
         }
     }
 
     private fun sendDmxData(data: ByteArray, universe: Int = 0){
+        log("Sending dmx data...")
         scope.launch {
             try {
+                log("Sending to universe $universe, size: ${data.size}")
                 artNet.unicastDmx(ipAddress, 0, universe, data)
             } catch (e: Exception){
-                e.printStackTrace()
+                log("ERROR sending dmx: ${e.message}")
             }
         }
     }

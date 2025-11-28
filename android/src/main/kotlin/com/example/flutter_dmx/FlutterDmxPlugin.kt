@@ -67,6 +67,10 @@ class FlutterDmxPlugin: FlutterPlugin, MethodCallHandler {
         dmxController.setAllColor(call.arguments as String)
         result.success(true)
       }
+      "setLogging" -> {
+        dmxController.setLogging(call.arguments as Boolean)
+        result.success(true)
+      }
     }
   }
 

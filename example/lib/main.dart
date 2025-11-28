@@ -22,6 +22,7 @@ class _MyAppState extends State<MyApp> implements DmxListener {
     _flutterDmx.dmxList.listen((dmxList) {
       //List of dmx data
     });
+    _flutterDmx.enableLogging(true);
   }
 
   @override

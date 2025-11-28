@@ -14,5 +14,7 @@ abstract class NativeRepository {
   Future<bool> setAllBrightness(int value);
   Future<bool> setAllColor(DmxColor color);
 
+  void setLogging(bool enable);
+
   Stream<List<DmxFixture>> get onDmxList;
 }

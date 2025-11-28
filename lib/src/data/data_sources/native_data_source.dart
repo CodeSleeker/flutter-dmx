@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter_dmx/src/business/data_sources/native_data_source.dart';
 import 'package:flutter_dmx/src/business/entities/dmx_fixture.dart';
+import 'package:flutter_dmx/src/core/dmx/logger.dart';
 import 'package:flutter_dmx/src/data/models/dmx_fixture_model.dart';
 
 class NativeDataSourceImpl implements NativeDataSource {
@@ -21,9 +22,12 @@ class NativeDataSourceImpl implements NativeDataSource {
                 .map((d) => DmxFixtureModel.fromJson(d))
                 .toList();
             final dmxDataList = dmxList.map((l) => l.toEntity()).toList();
+            DmxLogger.log(
+              'Dmx list updated, total count: ${dmxDataList.length}',
+            );
             _dmxListController.add(dmxDataList);
           } catch (e) {
-            throw Exception(e);
+            DmxLogger.log('Error on dmx list handler: ${e.toString()}');
           }
           break;
       }

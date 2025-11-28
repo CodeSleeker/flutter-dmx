@@ -6,6 +6,7 @@ import 'package:flutter_dmx/src/business/flutter_dmx.dart';
 import 'package:flutter_dmx/src/business/repositories/dmx_command_builder.dart';
 import 'package:flutter_dmx/src/business/repositories/native_repository.dart';
 import 'package:flutter_dmx/src/core/constants/dmx_color.dart';
+import 'package:flutter_dmx/src/core/dmx/logger.dart';
 import 'package:flutter_dmx/src/data/repositories/dmx_command_builder_impl.dart';
 import 'package:flutter_dmx/src/data/data_sources/native_data_source.dart';
 import 'package:flutter_dmx/src/data/repositories/native_repository.dart';
@@ -49,6 +50,7 @@ class FlutterDmxImpl implements FlutterDmx {
 
   @override
   void setListener(DmxListener listener) {
+    DmxLogger.log('Listener set');
     dmxListener = listener;
   }
 
@@ -72,4 +74,16 @@ class FlutterDmxImpl implements FlutterDmx {
 
   @override
   Future<bool> turnAllOn() async => await _repo.turnAllOn();
+
+  @override
+  void enableLogging(bool enabled) {
+    if (enabled) {
+      DmxLogger.enable();
+      DmxLogger.log('Logging enabled');
+    } else {
+      DmxLogger.log('Logging disabled');
+      DmxLogger.disable();
+    }
+    _repo.setLogging(enabled);
+  }
 }
