@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/CodeSleeker/flutter-dmx/compare/v1.2.1...v1.3.0) (2025-11-28)
+
+
+### Features
+
+* Added persistence ([4bf82a0](https://github.com/CodeSleeker/flutter-dmx/commit/4bf82a00b4f019f6830b6f0e8743030c7b4fd4cc))
+
 ## [1.2.1](https://github.com/CodeSleeker/flutter-dmx/compare/v1.2.0...v1.2.1) (2025-11-28)
 
 
