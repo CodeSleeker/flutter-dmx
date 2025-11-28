@@ -45,7 +45,11 @@ class DmxCommandBuilderImpl implements DmxCommandBuilder {
   @override
   Future<bool> sendByName(String name) async {
     return _plugin.controlByName(
-      DmxCommand(brightness: _brightness ?? 0, color: _color ?? DmxColor.white),
+      DmxCommand(
+        brightness: _brightness ?? 0,
+        color: _color ?? DmxColor.white,
+        name: name,
+      ),
     );
   }
 }

@@ -26,7 +26,7 @@ abstract class DmxFixtureModel with _$DmxFixtureModel {
     return DmxFixtureModel(
       id: entity.id,
       name: entity.name,
-      address: entity.address,
+      address: entity.address - 1,
       area: entity.area,
       colorMode: entity.colorMode,
       channel: entity.channel,

@@ -61,7 +61,7 @@ class NativeRepositoryImpl implements NativeRepository {
 
   @override
   Future<bool> setAllBrightness(int value) async {
-    return await dataSource.sendData('setAllBrightness', value.toString());
+    return await dataSource.sendData('setAllBrightness', value);
   }
 
   @override

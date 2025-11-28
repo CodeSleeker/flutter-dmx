@@ -20,7 +20,7 @@ class FlutterDmxPlugin: FlutterPlugin, MethodCallHandler {
     channel = MethodChannel(flutterPluginBinding.binaryMessenger, "dmx")
     channel.setMethodCallHandler(this)
 
-    dmxController = DmxController(channel)
+    dmxController = DmxController(channel).apply { start() }
   }
 
   override fun onMethodCall(call: MethodCall, result: Result) {

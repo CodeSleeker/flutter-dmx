@@ -28,7 +28,7 @@ void main() {
     test('should return false when datasource returns false', () async {
       // arrange
       when(
-        () => mockNativeDataSource.sendData(any(), any()),
+        () => mockNativeDataSource.sendData('ipAddress', '192.168.1.112'),
       ).thenAnswer((_) async => false);
 
       // act

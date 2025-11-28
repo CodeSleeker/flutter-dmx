@@ -3,6 +3,8 @@ package com.example.flutter_dmx
 import android.R
 import android.util.Log
 import ch.bildspur.artnet.ArtNetClient
+import ch.bildspur.artnet.events.ArtNetServerEventAdapter
+import ch.bildspur.artnet.packets.ArtNetPacket
 import com.example.flutter_dmx.models.DmxCommand
 import com.example.flutter_dmx.models.DmxFixture
 import com.example.flutter_dmx.models.DmxPacket
@@ -42,12 +44,12 @@ class DmxController(
 
         when(fixture.channel){
             7 -> {
-                dmxData[index] = (255 * (command.brightness / 100)).toByte()
+                dmxData[index] = (255 * (command.brightness / 100f)).toInt().toByte()
                 baseIndex = index + 1
             }
             1 -> {
                 if(command.color.all { it == 255 }){
-                    dmxData[index] = (255 * (command.brightness / 100)).toByte()
+                    dmxData[index] = (255 * (command.brightness / 100f)).toInt().toByte()
                 }
             }
             else -> {
@@ -135,10 +137,11 @@ class DmxController(
                 applyAllColor(fixture, fixture.address, rgb)
             }
         }
+        sendDmxData(dmxData)
     }
 
     fun setAllBrightness(brightnessPercent: Int){
-        val brightness = 255 * (brightnessPercent/100)
+        val brightness = (255 * (brightnessPercent/100f)).toInt()
         dmxMap.values.forEach { fixture ->
             if(fixture.count > 0 && fixture.addressMode.lowercase() == "seq"){
                 repeat(fixture.count){i->
@@ -150,6 +153,7 @@ class DmxController(
                 applyAll(fixture, fixture.address, brightness)
             }
         }
+        sendDmxData(dmxData)
     }
 
     fun turnAll(on: Boolean){
@@ -234,6 +238,12 @@ class DmxController(
             } catch (e: Exception){
                 e.printStackTrace()
             }
+        }
+    }
+
+    fun start(){
+        scope.launch {
+            artNet.start()
         }
     }
 }
