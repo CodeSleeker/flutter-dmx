@@ -31,7 +31,7 @@ class _MyAppState extends State<MyApp> implements DmxListener {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(title: const Text('Plugin example app')),
+        appBar: AppBar(title: const Text('FlutterDmx plugin example app')),
         body: Center(
           child: Column(
             children: [
