@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class DmxLogger {
   static bool _enabled = false;
 
@@ -6,8 +8,7 @@ class DmxLogger {
 
   static void log(String message) {
     if (_enabled) {
-      // ignore: avoid_print
-      print('[FlutterDmx] $message');
+      debugPrint('[FlutterDmx] $message');
     }
   }
 }

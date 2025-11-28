@@ -1,7 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dmx/flutter_dmx.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  FlutterDmx().enableLogging(kDebugMode);
   runApp(const MyApp());
 }
 
@@ -22,7 +25,6 @@ class _MyAppState extends State<MyApp> implements DmxListener {
     _flutterDmx.dmxList.listen((dmxList) {
       //List of dmx data
     });
-    _flutterDmx.enableLogging(true);
   }
 
   @override

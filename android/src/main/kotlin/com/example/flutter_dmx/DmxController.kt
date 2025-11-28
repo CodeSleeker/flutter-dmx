@@ -35,7 +35,7 @@ class DmxController(
 
     private fun log(message: String){
         if(loggingEnabled){
-            Log.d("[FlutterDmx]", message)
+            Log.d("[Android][FlutterDmx]", message)
         }
     }
 
