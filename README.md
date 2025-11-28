@@ -123,17 +123,17 @@ class MyController with DmxListener {
 flutter_dmx includes a simple built-in logger for debugging DMX commands and fixture updates.
 Logging is off by default.
 
-### Enable logging
+### Enable Logging
 ```
-dmx.enableLogging(true);
-```
-
-### Disable logging
-```
-dmx.enableLogging(false);
+FlutterDmx().enableLogging(true);
 ```
 
-### Example output
+### Disable Logging
+```
+FlutterDmx().enableLogging(false);
+```
+
+### Example Output
 ```
 [FlutterDmx] Sending command: id=3, brightness=150, color=blue
 [FlutterDmx] Dmx list updated, total count: 12
