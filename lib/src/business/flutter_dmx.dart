@@ -58,8 +58,11 @@ abstract class FlutterDmx {
   /// Registers a listener to receive callbacks for low-level DMX events.
   void setListener(DmxListener listener);
 
-  ///Enable logging
+  /// Enable logging
   void enableLogging(bool enabled);
+
+  /// Enable persistence
+  void persist();
 
   /// Provides a fluent command builder for constructing DMX commands.
   ///

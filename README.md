@@ -149,6 +149,33 @@ void main() {
 }
 ```
 
+## Persistence (Optional)
+
+The plugin includes a lightweight storage helper that lets you persist values such as:
+* Controller IP address
+* Stored DMX fixtures
+* Any additional plugin-related settings
+
+Persistence is opt-in, nothing is stored unless you explicitly call it.
+
+### Enabling Persistence
+Usually in main() or initState()
+```
+void main(){
+  WidgetsFlutterBinding.ensureInitialized();
+  FlutterDmx().persist(); //place below Logging
+  runApp(const MyApp());
+}
+```
+or
+```
+@override
+void initState() {
+  super.initState();
+  dmx.persist(); // up to you where to place it
+}
+```
+
 ## Models and Constants
 ### DmxFixture
 ```

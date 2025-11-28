@@ -4,18 +4,22 @@ import 'package:flutter_dmx/src/business/entities/dmx_packet.dart';
 import 'package:flutter_dmx/src/business/entities/dmx_command.dart';
 import 'package:flutter_dmx/src/business/flutter_dmx.dart';
 import 'package:flutter_dmx/src/business/repositories/dmx_command_builder.dart';
+import 'package:flutter_dmx/src/business/repositories/local_store_repository.dart';
 import 'package:flutter_dmx/src/business/repositories/native_repository.dart';
 import 'package:flutter_dmx/src/core/constants/dmx_color.dart';
 import 'package:flutter_dmx/src/core/dmx/logger.dart';
+import 'package:flutter_dmx/src/data/data_sources/local_store_impl.dart';
 import 'package:flutter_dmx/src/data/repositories/dmx_command_builder_impl.dart';
 import 'package:flutter_dmx/src/data/data_sources/native_data_source.dart';
+import 'package:flutter_dmx/src/data/repositories/local_store_repository_impl.dart';
 import 'package:flutter_dmx/src/data/repositories/native_repository.dart';
 
 class FlutterDmxImpl implements FlutterDmx {
   final NativeRepository _repo;
+  final LocalStoreRepository _localStore;
   DmxListener? dmxListener;
 
-  FlutterDmxImpl._(this._repo) {
+  FlutterDmxImpl._(this._repo, this._localStore) {
     _repo.onDmxList.listen((data) {
       dmxListener?.onDmxList(data);
     });
@@ -24,18 +28,26 @@ class FlutterDmxImpl implements FlutterDmx {
   factory FlutterDmxImpl() {
     final ds = NativeDataSourceImpl();
     final repo = NativeRepositoryImpl(dataSource: ds);
-    return FlutterDmxImpl._(repo);
+    final store = LocalStoreImpl();
+    final ls = LocalStoreRepositoryImpl(store: store);
+    return FlutterDmxImpl._(repo, ls);
   }
 
   @override
-  Future<bool> setData(DmxFixture data) async => await _repo.setData(data);
+  Future<bool> setData(DmxFixture data) async {
+    _localStore.storeDmxFixture(data);
+    return await _repo.setData(data);
+  }
 
   @override
   Future<bool> sendPackets(List<DmxPacket> packets) async =>
       await _repo.sendPackets(packets);
 
   @override
-  Future<bool> setIpAddress(String ip) async => await _repo.setIpAddress(ip);
+  Future<bool> setIpAddress(String ip) async {
+    _localStore.storeIp(ip);
+    return await _repo.setIpAddress(ip);
+  }
 
   @override
   Stream<List<DmxFixture>> get dmxList => _repo.onDmxList;
@@ -85,5 +97,24 @@ class FlutterDmxImpl implements FlutterDmx {
       DmxLogger.disable();
     }
     _repo.setLogging(enabled);
+  }
+
+  @override
+  void persist() async {
+    DmxLogger.log('Persistence enabled');
+    DmxLogger.log('Fetching data locally...');
+    final dmxFixtures = await _localStore.getDmxFixtures();
+    DmxLogger.log('Received local data, total count: ${dmxFixtures.length}');
+    final ip = await _localStore.getIp();
+    DmxLogger.log(
+      ip.isEmpty ? 'Ip not stored locally' : 'Ip locally stored: $ip',
+    );
+
+    for (final data in dmxFixtures) {
+      await _repo.setData(data);
+    }
+    if (ip.isNotEmpty) {
+      await _repo.setIpAddress(ip);
+    }
   }
 }

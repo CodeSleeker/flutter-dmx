@@ -267,7 +267,7 @@ class DmxController(
                 mapOf(
                     "id" to dmx.id,
                     "name" to dmx.name,
-                    "address" to dmx.address,
+                    "address" to dmx.address + 1,
                     "area" to dmx.area,
                     "colorMode" to dmx.colorMode,
                     "channel" to dmx.channel,

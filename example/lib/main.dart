@@ -5,6 +5,7 @@ import 'package:flutter_dmx/flutter_dmx.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   FlutterDmx().enableLogging(kDebugMode);
+  FlutterDmx().persist();
   runApp(const MyApp());
 }
 
