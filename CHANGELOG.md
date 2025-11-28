@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/CodeSleeker/flutter-dmx/compare/v1.1.2...v1.2.0) (2025-11-28)
+
+
+### Features
+
+* Updated readme ([ff32fb3](https://github.com/CodeSleeker/flutter-dmx/commit/ff32fb310ce52b32d02fb67f3519f5c459a9b452))
+
 ## [1.1.2](https://github.com/CodeSleeker/flutter-dmx/compare/v1.1.1...v1.1.2) (2025-11-27)
 
 
