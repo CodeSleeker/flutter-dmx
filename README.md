@@ -7,6 +7,7 @@ This plugin provides a high-level and low-level API for interacting with DMX con
 ## Features
 
 * Set DMX controller IP address
+* Set universe
 * Send raw DMX packets
 * Control lights by:
     * fixture ID
@@ -33,7 +34,7 @@ FlutterDmx dmx = FlutterDmx();
 await dmx.setIpAddress("192.168.1.50");
 ```
 
-## Seting universe
+## Setting universe
 ```
 await dmx.setUniverse(0)
 ```
