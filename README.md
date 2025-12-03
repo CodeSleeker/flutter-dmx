@@ -33,6 +33,11 @@ FlutterDmx dmx = FlutterDmx();
 await dmx.setIpAddress("192.168.1.50");
 ```
 
+## Seting universe
+```
+await dmx.setUniverse(0)
+```
+
 ## Controlling Fixtures
 
 ### By ID
