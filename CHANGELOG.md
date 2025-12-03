@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/CodeSleeker/flutter-dmx/compare/v1.3.0...v1.4.0) (2025-12-03)
+
+
+### Features
+
+* Can now set universe ([840d10b](https://github.com/CodeSleeker/flutter-dmx/commit/840d10bd92c83724903b4627392de709a7c62576))
+
 # [1.3.0](https://github.com/CodeSleeker/flutter-dmx/compare/v1.2.1...v1.3.0) (2025-11-28)
 
 
