@@ -45,4 +45,15 @@ class LocalStoreRepositoryImpl implements LocalStoreRepository {
   Future<void> storeIp(String ip) async {
     await store.setString('ip', ip);
   }
+
+  @override
+  Future<int> getUniverse() async {
+    final universe = await store.getString('universe');
+    return universe.isEmpty ? -1 : int.parse(universe);
+  }
+
+  @override
+  Future<void> storeUniverse(int universe) async {
+    await store.setString('universe', universe.toString());
+  }
 }

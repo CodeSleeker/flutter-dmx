@@ -50,6 +50,12 @@ class FlutterDmxImpl implements FlutterDmx {
   }
 
   @override
+  Future<bool> setUniverse(int universe) async {
+    _localStore.storeUniverse(universe);
+    return await _repo.setUniverse(universe);
+  }
+
+  @override
   Stream<List<DmxFixture>> get dmxList => _repo.onDmxList;
 
   @override
@@ -102,12 +108,21 @@ class FlutterDmxImpl implements FlutterDmx {
   @override
   void persist() async {
     DmxLogger.log('Persistence enabled');
+
     DmxLogger.log('Fetching data locally...');
     final dmxFixtures = await _localStore.getDmxFixtures();
     DmxLogger.log('Received local data, total count: ${dmxFixtures.length}');
+
+    DmxLogger.log('Fetching ip address...');
     final ip = await _localStore.getIp();
     DmxLogger.log(
       ip.isEmpty ? 'Ip not stored locally' : 'Ip locally stored: $ip',
+    );
+
+    DmxLogger.log('Fetching universe');
+    final universe = await _localStore.getUniverse();
+    DmxLogger.log(
+      universe >= 0 ? 'Universe not stored locally' : 'Universe locally stored',
     );
 
     for (final data in dmxFixtures) {
@@ -115,6 +130,9 @@ class FlutterDmxImpl implements FlutterDmx {
     }
     if (ip.isNotEmpty) {
       await _repo.setIpAddress(ip);
+    }
+    if (universe >= 0) {
+      await _repo.setUniverse(universe);
     }
   }
 }

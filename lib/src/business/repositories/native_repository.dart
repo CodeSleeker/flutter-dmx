@@ -2,6 +2,8 @@ import 'package:flutter_dmx/flutter_dmx.dart';
 
 abstract class NativeRepository {
   Future<bool> setIpAddress(String ipAddress);
+  Future<bool> setUniverse(int universe);
+
   Future<bool> setData(DmxFixture data);
   Future<bool> sendPackets(List<DmxPacket> packets);
 

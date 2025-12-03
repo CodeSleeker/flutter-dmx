@@ -24,6 +24,12 @@ class NativeRepositoryImpl implements NativeRepository {
   }
 
   @override
+  Future<bool> setUniverse(int universe) async {
+    DmxLogger.log('Set universe -> $universe');
+    return await dataSource.sendData('universe', universe);
+  }
+
+  @override
   Future<bool> setIpAddress(String ipAddress) async {
     DmxLogger.log('Set ip address -> $ipAddress');
     return await dataSource.sendData('ipAddress', ipAddress);

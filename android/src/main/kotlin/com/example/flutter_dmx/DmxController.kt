@@ -26,6 +26,7 @@ class DmxController(
     private val dmxMap = mutableMapOf<Int, DmxFixture>()
     private val artNet = ArtNetClient()
     private var ipAddress: String? = null
+    private var universe: Int? = null
 
     fun setLogging(enable: Boolean){
         loggingEnabled = enable
@@ -249,6 +250,10 @@ class DmxController(
         log("Ip Address set")
         ipAddress = ip
     }
+    fun setUniverse(universe: Int){
+        log("Universe set")
+        this.universe = universe
+    }
     fun setDmx(data: String){
         log("Received dmx fixture data: $data")
         try {
@@ -283,12 +288,12 @@ class DmxController(
         }
     }
 
-    private fun sendDmxData(data: ByteArray, universe: Int = 0){
+    private fun sendDmxData(data: ByteArray){
         log("Sending dmx data...")
         scope.launch {
             try {
                 log("Sending to universe $universe, size: ${data.size}")
-                artNet.unicastDmx(ipAddress, 0, universe, data)
+                artNet.unicastDmx(ipAddress, 0, universe ?: 0, data)
             } catch (e: Exception){
                 log("ERROR sending dmx: ${e.message}")
             }

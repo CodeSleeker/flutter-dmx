@@ -19,6 +19,11 @@ abstract class FlutterDmx {
   /// Returns 'true' if the IP was set successfully.
   Future<bool> setIpAddress(String ip);
 
+  /// Sets the DMX controller universe
+  ///
+  /// Returns 'true' if the universe was set successfully
+  Future<bool> setUniverse(int universe);
+
   /// Send a full DMX fixture data object to the controller.
   Future<bool> setData(DmxFixture data);
 

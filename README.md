@@ -77,13 +77,30 @@ await dmx.setAllColor(DmxColor.magenta);
 ```
 
 ## Using the Fluent Command Builder
-
 #### The builder lets you write cleaner code:
+
+### Control By Id
 ```
 dmx.set
   .color(DmxColor.orange)
   .brightness(80)
   .sendById(1);
+```
+
+### Control By Area
+```
+dmx.set
+  .color(DmxColor.red)
+  .brightness(80)
+  .sendByArea('North Field');
+```
+
+### Control By Name
+```
+dmx.set
+  .color(DmxColor.red)
+  .brightness(80)
+  .sendByName('Pole1');
 ```
 
 ## Listening to Fixture Updates

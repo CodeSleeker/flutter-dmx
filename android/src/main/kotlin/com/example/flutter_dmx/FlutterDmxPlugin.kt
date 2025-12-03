@@ -25,6 +25,10 @@ class FlutterDmxPlugin: FlutterPlugin, MethodCallHandler {
 
   override fun onMethodCall(call: MethodCall, result: Result) {
     when(call.method){
+      "universe" -> {
+        dmxController.setUniverse(call.arguments as Int)
+        result.success(true)
+      }
       "ipAddress" -> {
         dmxController.setIpAddress(call.arguments as String)
         result.success(true)
