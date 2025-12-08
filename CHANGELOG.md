@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/CodeSleeker/flutter-dmx/compare/v1.4.3...v1.5.0) (2025-12-08)
+
+
+### Features
+
+* Added scene programming ([b5e15df](https://github.com/CodeSleeker/flutter-dmx/commit/b5e15df1b1af95a121913a795a8b482fef49b19b))
+
 ## [1.4.3](https://github.com/CodeSleeker/flutter-dmx/compare/v1.4.2...v1.4.3) (2025-12-08)
 
 
