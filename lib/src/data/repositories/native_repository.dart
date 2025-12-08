@@ -4,6 +4,7 @@ import 'package:flutter_dmx/src/business/data_sources/native_data_source.dart';
 import 'package:flutter_dmx/src/business/entities/dmx_fixture.dart';
 import 'package:flutter_dmx/src/business/entities/dmx_packet.dart';
 import 'package:flutter_dmx/src/business/entities/dmx_command.dart';
+import 'package:flutter_dmx/src/business/entities/scene.dart';
 import 'package:flutter_dmx/src/business/repositories/native_repository.dart';
 import 'package:flutter_dmx/src/core/constants/dmx_color.dart';
 import 'package:flutter_dmx/src/core/constants/dmx_color_library.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_dmx/src/core/dmx/logger.dart';
 import 'package:flutter_dmx/src/data/models/dmx_fixture_model.dart';
 import 'package:flutter_dmx/src/data/models/dmx_packet.dart';
 import 'package:flutter_dmx/src/data/models/dmx_command.dart';
+import 'package:flutter_dmx/src/data/models/scene_model.dart';
 
 class NativeRepositoryImpl implements NativeRepository {
   final NativeDataSource dataSource;
@@ -21,6 +23,13 @@ class NativeRepositoryImpl implements NativeRepository {
     final dataString = jsonEncode(DmxFixtureModel.fromEntity(data));
     DmxLogger.log("Set data -> $dataString");
     return await dataSource.sendData('data', dataString);
+  }
+
+  @override
+  Future<bool> setScene(Scene scene) async {
+    final sceneString = jsonEncode(SceneModel.fromEntity(scene));
+    DmxLogger.log("Set scene -> $sceneString");
+    return await dataSource.sendData('scene', sceneString);
   }
 
   @override
@@ -46,6 +55,9 @@ class NativeRepositoryImpl implements NativeRepository {
 
   @override
   Stream<List<DmxFixture>> get onDmxList => dataSource.onDmxList;
+
+  @override
+  Stream<List<Scene>> get onSceneList => dataSource.onSceneList;
 
   @override
   Future<bool> controlByArea(DmxCommand command) async {
@@ -104,5 +116,17 @@ class NativeRepositoryImpl implements NativeRepository {
   @override
   void setLogging(bool enable) {
     dataSource.sendData('setLogging', enable);
+  }
+
+  @override
+  Future<bool> playScene(int id) async {
+    DmxLogger.log('Play scene by ID: $id');
+    return await dataSource.sendData('playScene', id);
+  }
+
+  @override
+  Future<bool> stopScene(int id) async {
+    DmxLogger.log('Stop scene by ID: $id');
+    return await dataSource.sendData('stopScene', id);
   }
 }

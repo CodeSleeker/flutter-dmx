@@ -2,10 +2,12 @@ import 'package:flutter_dmx/src/business/dmx_listener.dart';
 import 'package:flutter_dmx/src/business/entities/dmx_fixture.dart';
 import 'package:flutter_dmx/src/business/entities/dmx_packet.dart';
 import 'package:flutter_dmx/src/business/entities/dmx_command.dart';
+import 'package:flutter_dmx/src/business/entities/scene.dart';
 import 'package:flutter_dmx/src/business/flutter_dmx.dart';
 import 'package:flutter_dmx/src/business/repositories/dmx_command_builder.dart';
 import 'package:flutter_dmx/src/business/repositories/local_store_repository.dart';
 import 'package:flutter_dmx/src/business/repositories/native_repository.dart';
+import 'package:flutter_dmx/src/business/repositories/scene_command_builder.dart';
 import 'package:flutter_dmx/src/core/constants/dmx_color.dart';
 import 'package:flutter_dmx/src/core/dmx/logger.dart';
 import 'package:flutter_dmx/src/data/data_sources/local_store_impl.dart';
@@ -13,6 +15,7 @@ import 'package:flutter_dmx/src/data/repositories/dmx_command_builder_impl.dart'
 import 'package:flutter_dmx/src/data/data_sources/native_data_source.dart';
 import 'package:flutter_dmx/src/data/repositories/local_store_repository_impl.dart';
 import 'package:flutter_dmx/src/data/repositories/native_repository.dart';
+import 'package:flutter_dmx/src/data/repositories/scene_command_builder_impl.dart';
 
 class FlutterDmxImpl implements FlutterDmx {
   final NativeRepository _repo;
@@ -22,6 +25,9 @@ class FlutterDmxImpl implements FlutterDmx {
   FlutterDmxImpl._(this._repo, this._localStore) {
     _repo.onDmxList.listen((data) {
       dmxListener?.onDmxList(data);
+    });
+    _repo.onSceneList.listen((data) {
+      dmxListener?.onScenes(data);
     });
   }
 
@@ -37,6 +43,12 @@ class FlutterDmxImpl implements FlutterDmx {
   Future<bool> setData(DmxFixture data) async {
     _localStore.storeDmxFixture(data);
     return await _repo.setData(data);
+  }
+
+  @override
+  Future<bool> setScene(Scene scene) async {
+    _localStore.storeScene(scene);
+    return await _repo.setScene(scene);
   }
 
   @override
@@ -57,6 +69,9 @@ class FlutterDmxImpl implements FlutterDmx {
 
   @override
   Stream<List<DmxFixture>> get dmxList => _repo.onDmxList;
+
+  @override
+  Stream<List<Scene>> get scenes => _repo.onSceneList;
 
   @override
   Future<bool> controlByArea(DmxCommand command) async =>
@@ -113,6 +128,10 @@ class FlutterDmxImpl implements FlutterDmx {
     final dmxFixtures = await _localStore.getDmxFixtures();
     DmxLogger.log('Received local data, total count: ${dmxFixtures.length}');
 
+    DmxLogger.log('Fetching scenes locally...');
+    final scenes = await _localStore.getScenes();
+    DmxLogger.log('Received local scenes, total count: ${scenes.length}');
+
     DmxLogger.log('Fetching ip address...');
     final ip = await _localStore.getIp();
     DmxLogger.log(
@@ -128,11 +147,29 @@ class FlutterDmxImpl implements FlutterDmx {
     for (final data in dmxFixtures) {
       await _repo.setData(data);
     }
+    for (final scene in scenes) {
+      await _repo.setScene(scene);
+    }
     if (ip.isNotEmpty) {
       await _repo.setIpAddress(ip);
     }
     if (universe >= 0) {
       await _repo.setUniverse(universe);
     }
+  }
+
+  @override
+  Future<bool> playScene(int id) async {
+    return await _repo.playScene(id);
+  }
+
+  @override
+  SceneCommandBuilder scene(int id) {
+    return SceneCommandBuilderImpl(this, id);
+  }
+
+  @override
+  Future<bool> stopScene(int id) async {
+    return await _repo.stopScene(id);
   }
 }

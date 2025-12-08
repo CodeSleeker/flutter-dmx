@@ -30,3 +30,16 @@ abstract class DmxCommandModel with _$DmxCommandModel {
     );
   }
 }
+
+extension DmxCommandModelX on DmxCommandModel {
+  DmxCommand toEntity() {
+    return DmxCommand(
+      brightness: brightness,
+      color: color.toDmxColor(),
+      index: index,
+      area: area,
+      id: id,
+      name: name,
+    );
+  }
+}

@@ -1,5 +1,6 @@
 import 'package:flutter_dmx/flutter_dmx.dart';
 import 'package:flutter_dmx/src/business/repositories/dmx_command_builder.dart';
+import 'package:flutter_dmx/src/business/repositories/scene_command_builder.dart';
 import 'package:flutter_dmx/src/data/flutter_dmx_impl.dart';
 
 /// The main interface for interacting with Flutter DMX plugin
@@ -27,10 +28,19 @@ abstract class FlutterDmx {
   /// Send a full DMX fixture data object to the controller.
   Future<bool> setData(DmxFixture data);
 
+  /// Set a predefined scene to all affected fixtures.
+  Future<bool> setScene(Scene scene);
+
   /// Sends a list of DMX packets over the network
   ///
   /// Each packet contains channel and value data needed for lighting control.
   Future<bool> sendPackets(List<DmxPacket> packets);
+
+  /// Play scene using its assigned ID.
+  Future<bool> playScene(int id);
+
+  /// Stop scene by ID.
+  Future<bool> stopScene(int id);
 
   /// Controls fixtures grouped by area name.
   ///
@@ -62,6 +72,11 @@ abstract class FlutterDmx {
   /// Emits updates whenever fixtures change state.
   Stream<List<DmxFixture>> get dmxList;
 
+  /// Stream of all Scenes
+  ///
+  /// Emits updates whenever scenes change state.
+  Stream<List<Scene>> get scenes;
+
   /// Registers a listener to receive callbacks for low-level DMX events.
   void setListener(DmxListener listener);
 
@@ -78,6 +93,18 @@ abstract class FlutterDmx {
   /// flutterDmx.set
   ///   .color(DmxColor.red)
   ///   .brightness(255)
-  /// ``
+  /// ```
   DmxCommandBuilder get set;
+
+  /// Provides a fluent command builder for controlling a specific scene by its ID.
+  ///
+  /// Example:
+  /// ```dart
+  /// // Play scene with ID 0
+  /// flutterDmx.scene(0).play();
+  ///
+  /// // Stop scene with ID 2
+  /// flutterDmx.scene(2).stop();
+  /// ```
+  SceneCommandBuilder scene(int id);
 }

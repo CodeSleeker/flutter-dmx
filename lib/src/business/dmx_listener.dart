@@ -6,4 +6,7 @@ import 'package:flutter_dmx/flutter_dmx.dart';
 abstract class DmxListener {
   /// Called when the plugin sends an updated list of fixtures.
   void onDmxList(List<DmxFixture> dmxList);
+
+  ///Called when the plugin sends an updated list of scenes.
+  void onScenes(List<Scene> scenes);
 }

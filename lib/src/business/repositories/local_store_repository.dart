@@ -9,4 +9,7 @@ abstract class LocalStoreRepository {
 
   Future<void> storeDmxFixture(DmxFixture fixtures);
   Future<List<DmxFixture>> getDmxFixtures();
+
+  Future<void> storeScene(Scene scene);
+  Future<List<Scene>> getScenes();
 }

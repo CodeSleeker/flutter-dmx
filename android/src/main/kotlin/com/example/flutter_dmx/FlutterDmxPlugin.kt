@@ -33,6 +33,21 @@ class FlutterDmxPlugin: FlutterPlugin, MethodCallHandler {
         dmxController.setIpAddress(call.arguments as String)
         result.success(true)
       }
+      "scene" -> {
+        val jsonString = call.arguments as String
+        dmxController.setScene(jsonString)
+        result.success(true)
+      }
+      "playScene" -> {
+        val id = call.arguments as Int
+        dmxController.playScene(id)
+        result.success(true)
+      }
+      "stopScene" -> {
+        val id = call.arguments as Int
+        dmxController.stopScene(id)
+        result.success(true)
+      }
       "data" -> {
         val jsonString = call.arguments as String
         dmxController.setDmx(jsonString)

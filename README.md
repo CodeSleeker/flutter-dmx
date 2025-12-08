@@ -6,6 +6,8 @@ This plugin provides a high-level and low-level API for interacting with DMX con
 
 ## Features
 
+* Set DMX fixture(s)
+* Set Scene
 * Set DMX controller IP address
 * Set universe
 * Send raw DMX packets
@@ -16,7 +18,7 @@ This plugin provides a high-level and low-level API for interacting with DMX con
 * Turn all fixtures on/off
 * Set global brightness or color
 * Listen to live fixture updates
-* Fluent command builder (e.g., .set.color().brightness())
+* Fluent command builder (e.g., .set.color().brightness(), .scene(id).play())
 * Register DMX event listeners
 
 ## Getting Started
@@ -27,6 +29,54 @@ import 'package:flutter_dmx/flutter_dmx.dart';
 ### Instantiate
 ```
 FlutterDmx dmx = FlutterDmx();
+```
+
+## Setting DMX Data
+```
+await dmx.setData(
+  DmxFixture(
+    id: 0,
+    address: 1,
+    area: 'North',
+    colorMode: ColorMode.rgbw,
+    name: 'Pole1',
+    channel: 7,
+    addressMode: AddressMode.seq,
+    count: 2
+  )
+);
+```
+
+## Setting Scene
+```
+final commands = [
+  DmxCommand(
+    brightness: 100,
+    color: DmxColor.red,
+    area: 'north',
+  ),
+  DmxCommand(
+    brightness: 100,
+    color: DmxColor.green,
+    name: 'pole2',
+  ),
+  DmxCommand(
+    brightness: 100,
+    color: DmxColor.blue,
+    id: 0,
+    index: 1,
+  ),
+];
+final scene = Scene(
+  id: 0,
+  name: 'scene1',
+  steps: [
+    SceneStep(
+      commands: commands,
+      durationMs: 1000,
+    ),
+  ],
+);
 ```
 
 ## Setting the Controller IP
@@ -111,10 +161,35 @@ dmx.set
   .sendByName('Pole1');
 ```
 
+### Scene Command Builder
+```
+// Play scene with ID 0
+dmx.scene(0).play();
+
+// Stop scene with ID 1
+dmx.scene(1).stop();
+```
+
+## Scene Methods
+```
+// Play scene with ID 0
+dmx.playScene(0);
+
+// Stop scene with ID 1
+dmx.stopScene(1);
+```
+
 ## Listening to Fixture Updates
 ```
 dmx.dmxList.listen((fixtures) {
-  print("Updated fixtures: $fixtures");
+  // List of fixture
+});
+```
+
+## Listening to Scene Updates
+```
+dmx.scenes.listen((scenes){
+  // List of scene
 });
 ```
 
@@ -139,7 +214,12 @@ class MyController with DmxListener {
 
   @override
   void onDmxList(List<DmxFixture> list) {
-    print("Fixture list updated: $list");
+    // List of dmx data
+  }
+
+  @override
+  void onScenes(List<Scene> scenes) {
+    // List of scene
   }
 }
 ```
@@ -223,6 +303,41 @@ DmxCommand(
 );
 ```
 
+### SceneStep
+```
+SceneStep(
+  durationMs: 1000,
+  commands: [
+    DmxCommand(
+      brightness: 0,
+      color: DmxColor.blue,
+      id: 0,
+    ),
+  ]
+);
+```
+
+### Scene
+```
+Scene(
+  id: 0,
+  name: 'scene1',
+  loop: true,
+  steps: [
+    SceneStep(
+      commands: [
+        DmxCommand(
+          brightness: 0,
+          color: DmxColor.blue,
+          id: 0,
+        ),
+      ],
+      durationMs: 1000,
+    ),
+  ],
+);
+```
+
 ### Enums
 ```
 DmxColor.red
@@ -251,12 +366,14 @@ class _MyAppState extends State<MyApp> implements DmxListener {
   void onDmxList(List<DmxFixture> dmxList) {
     print("Fixtures updated: $dmxList");
   }
+  @override
+  void onScenes(List<Scene> scenes) {
+    print("Scenes updated: $scenes");
+  }
 }
 ```
 
 ## What’s Next
-
-* Scene programming support
 
 * Pattern effects (strobes, chases)
 

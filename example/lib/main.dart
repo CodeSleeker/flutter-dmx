@@ -24,7 +24,10 @@ class _MyAppState extends State<MyApp> implements DmxListener {
     super.initState();
     _flutterDmx.setListener(this);
     _flutterDmx.dmxList.listen((dmxList) {
-      //List of dmx data
+      // List of dmx data
+    });
+    _flutterDmx.scenes.listen((scenes) {
+      // List of scene
     });
   }
 
@@ -88,6 +91,40 @@ class _MyAppState extends State<MyApp> implements DmxListener {
                   _flutterDmx.setData(dmxData);
                 },
                 child: Text('Set data 3'),
+              ),
+              SizedBox(height: 50),
+              ElevatedButton(
+                onPressed: () {
+                  final scene = Scene(
+                    id: 0,
+                    name: 'scene1',
+                    steps: [
+                      SceneStep(
+                        commands: [
+                          DmxCommand(
+                            brightness: 50,
+                            color: DmxColor.red,
+                            area: 'north',
+                          ),
+                          DmxCommand(
+                            brightness: 80,
+                            color: DmxColor.green,
+                            name: 'pole2',
+                          ),
+                          DmxCommand(
+                            brightness: 0,
+                            color: DmxColor.blue,
+                            id: 0,
+                            index: 1,
+                          ),
+                        ],
+                        durationMs: 1000,
+                      ),
+                    ],
+                  );
+                  _flutterDmx.setScene(scene);
+                },
+                child: Text('Set scene'),
               ),
               SizedBox(height: 50),
               Row(
@@ -181,6 +218,19 @@ class _MyAppState extends State<MyApp> implements DmxListener {
                 },
                 child: Text('Set all color'),
               ),
+              SizedBox(height: 50),
+              ElevatedButton(
+                onPressed: () {
+                  _flutterDmx.scene(0).play();
+                },
+                child: Text('Play scene'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  _flutterDmx.scene(2).stop();
+                },
+                child: Text('Stop scene'),
+              ),
             ],
           ),
         ),
@@ -190,6 +240,11 @@ class _MyAppState extends State<MyApp> implements DmxListener {
 
   @override
   void onDmxList(List<DmxFixture> dmxList) {
-    //List of dmx data
+    // List of dmx data
+  }
+
+  @override
+  void onScenes(List<Scene> scenes) {
+    // List of scene
   }
 }

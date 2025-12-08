@@ -5,6 +5,7 @@ abstract class NativeRepository {
   Future<bool> setUniverse(int universe);
 
   Future<bool> setData(DmxFixture data);
+  Future<bool> setScene(Scene scene);
   Future<bool> sendPackets(List<DmxPacket> packets);
 
   Future<bool> controlByArea(DmxCommand command);
@@ -16,7 +17,11 @@ abstract class NativeRepository {
   Future<bool> setAllBrightness(int value);
   Future<bool> setAllColor(DmxColor color);
 
+  Future<bool> playScene(int id);
+  Future<bool> stopScene(int id);
+
   void setLogging(bool enable);
 
   Stream<List<DmxFixture>> get onDmxList;
+  Stream<List<Scene>> get onSceneList;
 }

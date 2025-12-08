@@ -2,8 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter_dmx/src/business/data_sources/local_store.dart';
 import 'package:flutter_dmx/src/business/entities/dmx_fixture.dart';
+import 'package:flutter_dmx/src/business/entities/scene.dart';
 import 'package:flutter_dmx/src/business/repositories/local_store_repository.dart';
 import 'package:flutter_dmx/src/data/models/dmx_fixture_model.dart';
+import 'package:flutter_dmx/src/data/models/scene_model.dart';
 
 class LocalStoreRepositoryImpl implements LocalStoreRepository {
   final LocalStore store;
@@ -20,6 +22,33 @@ class LocalStoreRepositoryImpl implements LocalStoreRepository {
   @override
   Future<String> getIp() async {
     return await store.getString('ip');
+  }
+
+  @override
+  Future<List<Scene>> getScenes() async {
+    final list = await store.getStringList('scenes');
+    final listModel = list
+        .map((l) => SceneModel.fromJson(jsonDecode(l)))
+        .toList();
+    return listModel.map((l) => l.toEntity()).toList();
+  }
+
+  @override
+  Future<void> storeScene(Scene scene) async {
+    final sceneList = await getScenes();
+
+    final index = sceneList.indexWhere((s) => s.id == scene.id);
+
+    if (index >= 0) {
+      sceneList[index] = scene;
+    } else {
+      sceneList.insert(0, scene);
+    }
+    final encoded = sceneList
+        .map((s) => jsonEncode(SceneModel.fromEntity(s).toJson()))
+        .toList();
+
+    await store.setStringList('scene', encoded);
   }
 
   @override

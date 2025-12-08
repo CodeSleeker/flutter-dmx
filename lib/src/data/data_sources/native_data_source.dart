@@ -1,15 +1,17 @@
 import 'dart:async';
 
 import 'package:flutter/services.dart';
+import 'package:flutter_dmx/flutter_dmx.dart';
 import 'package:flutter_dmx/src/business/data_sources/native_data_source.dart';
-import 'package:flutter_dmx/src/business/entities/dmx_fixture.dart';
 import 'package:flutter_dmx/src/core/dmx/logger.dart';
 import 'package:flutter_dmx/src/data/models/dmx_fixture_model.dart';
+import 'package:flutter_dmx/src/data/models/scene_model.dart';
 
 class NativeDataSourceImpl implements NativeDataSource {
   final _channel = MethodChannel('dmx');
 
   final _dmxListController = StreamController<List<DmxFixture>>.broadcast();
+  final _sceneListController = StreamController<List<Scene>>.broadcast();
 
   NativeDataSourceImpl() {
     _channel.setMethodCallHandler((call) async {
@@ -30,6 +32,20 @@ class NativeDataSourceImpl implements NativeDataSource {
             DmxLogger.log('Error on dmx list handler: ${e.toString()}');
           }
           break;
+        case 'scene_list':
+          try {
+            final jsonList = call.arguments as List<dynamic>;
+            final List<SceneModel> sceneList = jsonList
+                .map((l) => Map<String, dynamic>.from(l as Map))
+                .map((s) => SceneModel.fromJson(s))
+                .toList();
+
+            final scenes = sceneList.map((s) => s.toEntity()).toList();
+            _sceneListController.add(scenes);
+          } catch (e) {
+            DmxLogger.log('Error on scene list handler: ${e.toString()}');
+          }
+          break;
       }
     });
   }
@@ -40,6 +56,9 @@ class NativeDataSourceImpl implements NativeDataSource {
 
   @override
   Stream<List<DmxFixture>> get onDmxList => _dmxListController.stream;
+
+  @override
+  Stream<List<Scene>> get onSceneList => _sceneListController.stream;
 
   @override
   Future<bool> send(String method) async {

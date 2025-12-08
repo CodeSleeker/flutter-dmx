@@ -8,12 +8,16 @@ import ch.bildspur.artnet.packets.ArtNetPacket
 import com.example.flutter_dmx.models.DmxCommand
 import com.example.flutter_dmx.models.DmxFixture
 import com.example.flutter_dmx.models.DmxPacket
+import com.example.flutter_dmx.models.Scene
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class DmxController(
@@ -24,9 +28,11 @@ class DmxController(
     private val gson: Gson = Gson()
     private val dmxData: ByteArray = ByteArray(512)
     private val dmxMap = mutableMapOf<Int, DmxFixture>()
+    private val sceneMap = mutableMapOf<Int, Scene>()
     private val artNet = ArtNetClient()
     private var ipAddress: String? = null
     private var universe: Int? = null
+    private val runningScenes = mutableMapOf<Int, Job>()
 
     fun setLogging(enable: Boolean){
         loggingEnabled = enable
@@ -40,6 +46,59 @@ class DmxController(
         }
     }
 
+    fun playScene(id: Int){
+        val scene = sceneMap[id]
+        if(scene == null) {
+            log("Scene ID $id not found")
+            return
+        }
+        if(runningScenes.containsKey(id)){
+            log("Scene $id is already running ")
+        }
+        val job = scope.launch {
+            do {
+                for(step in scene.steps){
+                    for(command in step.commands){
+                        if(command.name != null){
+                            dmxMap.values.filter { it.name == command.name}
+                                .forEach { fixture ->
+                                    log("Applying command to fixture id: ${fixture.id}")
+                                    applyCommandToFixture(fixture, command)
+                                }
+                        }
+                        else if (command.area != null) {
+                            dmxMap.values.filter { it.area == command.area }
+                                .forEach { fixture ->
+                                    log("Applying command to fixture id: ${fixture.id}")
+                                    applyCommandToFixture(fixture, command)
+                                }
+                        } else{
+                            val fixture = dmxMap[command.id] ?: return@launch
+                            log("Applying command to fixture id: ${fixture.id}")
+                            applyCommandToFixture(fixture, command)
+                        }
+                    }
+                    sendDmxData(dmxData)
+                    delay(step.durationMs.toLong())
+                }
+            } while (scene.loop && isActive)
+        }
+    }
+    fun stopScene(id: Int){
+        val scene = sceneMap[id]
+        if(scene == null) {
+            log("Scene ID $id not found")
+            return
+        }
+        val job = runningScenes[id]
+        if(job == null){
+            log("Scene ID $id is not running")
+            return
+        }
+        job.cancel()
+        runningScenes.remove(id)
+        log("Scene $id stopped")
+    }
     fun applyBrightness(rgb: List<Int>, brightnessPercent: Int): List<Int> {
         val brightness = brightnessPercent / 100.0
         return rgb.map { (it * brightness).toInt().coerceIn(0,255) }
@@ -259,6 +318,32 @@ class DmxController(
     fun setUniverse(universe: Int){
         log("Universe set")
         this.universe = universe
+    }
+    fun setScene(data: String){
+        log("Received scene: $data")
+        try {
+            val scene: Scene = gson.fromJson(data, Scene::class.java)
+            sceneMap[scene.id] = Scene(
+                id = scene.id,
+                name = scene.name,
+                steps = scene.steps,
+                loop = scene.loop
+            )
+            val sceneList: List<Map<String, Any?>> = sceneMap.values.map{s ->
+                mapOf(
+                    "id" to s.id,
+                    "name" to s.name,
+                    "steps" to s.steps,
+                    "loop" to s.loop
+                )
+            }.toList()
+            mainScope.launch {
+                channel.invokeMethod("scene_list", sceneList)
+            }
+        }
+        catch (e: Exception){
+            log("Invalid JSON: $data")
+        }
     }
     fun setDmx(data: String){
         log("Received dmx fixture data: $data")

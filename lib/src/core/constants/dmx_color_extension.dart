@@ -44,3 +44,13 @@ extension DmxColorX on DmxColor {
     }
   }
 }
+
+final Map<List<int>, DmxColor> _rgbToColorMap = {
+  for (var color in DmxColor.values) color.data.rgb: color,
+};
+
+extension DmxColorFromRgb on List<int> {
+  DmxColor toDmxColor() {
+    return _rgbToColorMap[this]!;
+  }
+}
