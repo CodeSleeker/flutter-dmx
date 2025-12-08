@@ -263,3 +263,9 @@ class _MyAppState extends State<MyApp> implements DmxListener {
 ## ❤️ Support This Plugin
 
 If this plugin has helped you in your project, consider giving it a 👍 on pub.dev. It's a simple gesture, but it really helps others discover the plugin and motivates ongoing development.
+
+Maintaining this plugin takes real time and effort: code updates, testing across platforms, fixing issues, adding new features, and keeping up with Flutter and Android/iOS changes. If you’d like to support the work that goes into keeping this project alive and improving, you can do so here:
+
+[![Buy Me A Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/codesleeker)
+
+Your support directly helps with maintaining the plugin and pushing new updates. Thank you! 🙌
