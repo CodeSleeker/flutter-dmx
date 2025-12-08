@@ -259,3 +259,7 @@ class _MyAppState extends State<MyApp> implements DmxListener {
 * Pattern effects (strobes, chases)
 
 * Scheduled commands
+
+## ❤️ Support This Plugin
+
+If this plugin has helped you in your project, consider giving it a 👍 on pub.dev. It's a simple gesture, but it really helps others discover the plugin and motivates ongoing development.
