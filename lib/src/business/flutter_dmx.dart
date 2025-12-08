@@ -38,6 +38,8 @@ abstract class FlutterDmx {
   Future<bool> controlByArea(DmxCommand command);
 
   /// Controls a fixture(s) using its assigned ID.
+  /// If `index` is provided in the command, only that specific instance
+  /// within a multi-instance fixture (count > 1) will be targeted.
   Future<bool> controlById(DmxCommand command);
 
   /// Controls fixtures using their friendly string name.

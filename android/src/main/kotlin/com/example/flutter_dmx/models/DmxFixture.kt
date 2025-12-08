@@ -8,5 +8,6 @@ data class DmxFixture (
     val channel: Int,
     val colorMode: String,
     val count: Int?,
-    val addressMode: String?
+    val addressMode: String?,
+    val index: Int?
 )

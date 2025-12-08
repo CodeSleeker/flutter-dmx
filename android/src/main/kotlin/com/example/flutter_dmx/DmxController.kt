@@ -118,9 +118,15 @@ class DmxController(
 
     private fun applySequential(fixture: DmxFixture, command: DmxCommand){
         val count = fixture.count ?: 1
-        repeat(count){i ->
-            val baseIndex = fixture.address + (i * fixture.channel)
+        if(fixture.index != null){
+            val baseIndex = fixture.address + (fixture.index * fixture.channel)
             applyChannelLogic(fixture, command, baseIndex)
+        }
+        else {
+            repeat(count) { i ->
+                val baseIndex = fixture.address + (i * fixture.channel)
+                applyChannelLogic(fixture, command, baseIndex)
+            }
         }
     }
 
@@ -266,7 +272,8 @@ class DmxController(
                 colorMode = dmx.colorMode,
                 channel = dmx.channel,
                 count = dmx.count,
-                addressMode = dmx.addressMode
+                addressMode = dmx.addressMode,
+                index = dmx.index
             )
             val dmxList: List<Map<String, Any?>> = dmxMap.values.map { dmx ->
                 mapOf(

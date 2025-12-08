@@ -46,6 +46,7 @@ await dmx.setUniverse(0)
 dmx.controlById(
   DmxCommand(
     id: 1,
+    index: 1, // optional: targets a specific instance of a multi-count fixture
     color: DmxColor.red,
     brightness: 90,
   ),
@@ -90,6 +91,7 @@ await dmx.setAllColor(DmxColor.magenta);
 dmx.set
   .color(DmxColor.orange)
   .brightness(80)
+  .index(1) // optional: targets a specific instance of a multi-count fixture
   .sendById(1);
 ```
 

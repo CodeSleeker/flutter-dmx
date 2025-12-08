@@ -10,6 +10,7 @@ abstract class DmxCommandModel with _$DmxCommandModel {
   const factory DmxCommandModel({
     required int brightness,
     required List<int> color,
+    int? index,
     int? id,
     String? area,
     String? name,
@@ -22,6 +23,7 @@ abstract class DmxCommandModel with _$DmxCommandModel {
     return DmxCommandModel(
       brightness: entity.brightness,
       color: entity.color.data.rgb,
+      index: entity.index,
       id: entity.id,
       area: entity.area,
       name: entity.name,
