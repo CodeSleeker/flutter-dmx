@@ -7,7 +7,6 @@ This plugin provides a high-level and low-level API for interacting with DMX con
 ## Features
 
 * Set DMX fixture(s)
-* Set Scene
 * Set DMX controller IP address
 * Set universe
 * Send raw DMX packets
@@ -17,7 +16,10 @@ This plugin provides a high-level and low-level API for interacting with DMX con
     * area/group name
 * Turn all fixtures on/off
 * Set global brightness or color
+* Set Scene
+* Play/Stop scene
 * Listen to live fixture updates
+* Listen to scene updates
 * Fluent command builder (e.g., .set.color().brightness(), .scene(id).play())
 * Register DMX event listeners
 
