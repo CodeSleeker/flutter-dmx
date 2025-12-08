@@ -1,3 +1,10 @@
+## [1.4.3](https://github.com/CodeSleeker/flutter-dmx/compare/v1.4.2...v1.4.3) (2025-12-08)
+
+
+### Bug Fixes
+
+* Updated support section ([452dbe4](https://github.com/CodeSleeker/flutter-dmx/commit/452dbe4d67d3666b29d586120b8ab96f84f30c0d))
+
 ## [1.4.2](https://github.com/CodeSleeker/flutter-dmx/compare/v1.4.1...v1.4.2) (2025-12-03)
 
 
