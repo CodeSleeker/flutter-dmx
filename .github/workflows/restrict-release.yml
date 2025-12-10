@@ -1,0 +1,16 @@
+name: Protect Master Branch
+
+on:
+  push:
+    branches:
+      - release
+
+jobs:
+  block-authorized-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check authorized user
+        if: github.actor != 'CodeSleeker' && github.actor != 'semantic-release-bot'
+        run: |
+          echo "User $GITHUB_ACTOR is not allowed to push to release!"
+          exit 1
