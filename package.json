@@ -4,7 +4,7 @@
     "private": true,
     "release": {
         "branches": [
-            "master"
+            "release"
         ],
         "plugins": [
             "@semantic-release/commit-analyzer",
