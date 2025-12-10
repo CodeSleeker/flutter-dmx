@@ -381,6 +381,14 @@ class _MyAppState extends State<MyApp> implements DmxListener {
 
 * Scheduled commands
 
+## 🤝 Contributions
+
+Contributions are always welcome!
+
+If you find a bug or have a feature request but aren’t sure how to implement it, feel free to open an issue, I’m happy to take a look. [Open an Issue](https://github.com/CodeSleeker/flutter-dmx/issues)
+
+If you’ve already fixed something or added a new feature, go ahead and submit a pull request. Let’s make this plugin better together! [Submit a Pull Request](https://github.com/CodeSleeker/flutter-dmx/pulls)
+
 ## ❤️ Support This Plugin
 
 If this plugin has helped you in your project, consider giving it a 👍 on pub.dev. It's a simple gesture, but it really helps others discover the plugin and motivates ongoing development.
